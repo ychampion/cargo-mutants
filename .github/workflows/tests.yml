@@ -170,7 +170,7 @@ jobs:
           cache-after-prepare: true
           prepare: |
             pkg refresh
-            pkg install developer/build/onbld rust
+            pkg install developer/build/onbld developer/versioning/git rust
             cargo install --locked cargo-nextest
           run: |
             whoami
