@@ -2040,7 +2040,14 @@ fn list_mutants_changed_in_git_diff_from_nested_workspace() {
         &["config", "user.name", "Test User"],
         &["config", "user.email", "test@example.com"],
         &["add", "."],
-        &["commit", "--quiet", "--message", "baseline"],
+        &[
+            "-c",
+            "commit.gpgsign=false",
+            "commit",
+            "--quiet",
+            "--message",
+            "baseline",
+        ],
     ] {
         let output = Command::new("git")
             .args(args)
@@ -2098,6 +2105,27 @@ fn invalid_in_git_diff_revision_returns_exit_code_6() {
         .assert()
         .code(6)
         .stderr(contains("Failed to run git diff").and(contains("not-a-revision")));
+}
+
+#[test]
+fn in_git_diff_rejects_revisions_that_look_like_options() {
+    let tmp = copy_of_testdata("diff0");
+    let output = Command::new("git")
+        .args(["init", "--quiet"])
+        .current_dir(tmp.path())
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+
+    for revision in ["--quiet", "--help", "-R"] {
+        run()
+            .args(["mutants", "--list", "-d"])
+            .arg(tmp.path())
+            .arg(format!("--in-git-diff={revision}"))
+            .assert()
+            .code(6)
+            .stderr(contains("revision must not start with '-'").and(contains(revision)));
+    }
 }
 
 #[test]

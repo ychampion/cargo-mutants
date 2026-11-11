@@ -6,6 +6,8 @@ The `--in-diff DIFF_FILE` option tests only mutants that overlap with regions ch
 
 The `--in-git-diff REVISION` option runs `git diff REVISION` in the workspace and tests mutants that overlap with that output. For example, `cargo mutants --in-git-diff main` tests code changed on the current branch since `main`.
 
+Revisions starting with `-` are rejected with exit code 6 instead of being interpreted as Git options.
+
 `--in-diff` and `--in-git-diff` cannot be used together.
 
 A diff passed with `--in-diff` is expected to either have a prefix of `b/` on the new filename, which is the format produced by `git diff`, or no prefix.

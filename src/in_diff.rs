@@ -80,6 +80,11 @@ pub fn diff_filter_git(
     workspace_root: &Utf8Path,
     revision: &str,
 ) -> Result<Vec<Mutant>, DiffFilterError> {
+    if revision.starts_with('-') {
+        return Err(DiffFilterError::Git(format!(
+            "revision must not start with '-': {revision}"
+        )));
+    }
     let output = Command::new("git")
         .args([
             "diff",
