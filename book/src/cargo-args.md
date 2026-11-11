@@ -35,7 +35,12 @@ Use `--target-dir` to set the Cargo target directory for every check, build, and
 cargo mutants --target-dir target/mutants
 ```
 
-The path is passed to Cargo unchanged. The equivalent configuration-file form is:
+The path is passed to Cargo unchanged. A relative path is resolved inside each
+scratch copy of the workspace, so `target/mutants` is removed with that copy when
+the run finishes unless `--leak-dirs` retains it. With `--in-place`, it is relative to the source workspace
+instead. Use an absolute path to keep artifacts outside the scratch directories.
+
+The equivalent configuration-file form is:
 
 ```toml
 additional_cargo_args = ["--target-dir=target/mutants"]
